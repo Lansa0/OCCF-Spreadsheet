@@ -15,7 +15,7 @@ class Spreadsheet
 {
     OCCF* SheetData;
     bool Verified = false;
-    uint8_t CellSize = 9;
+    uint8_t CellSize = 5;
     uint8_t Columns;
     uint16_t Rows;
 
