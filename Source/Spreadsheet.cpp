@@ -370,7 +370,7 @@ void Spreadsheet::draw(const char* OutputFilePath)
     OutputFile.close();
 }
 
-void Spreadsheet::LiveEditMode(const char* OutputFilePath)
+void Spreadsheet::LiveEditMode(const char* OutputFilePath,const char* SaveFilePath)
 {
     if (!Verified){throw VerifyError("ERROR : Spreadsheet data unverified");}
 
@@ -425,6 +425,8 @@ void Spreadsheet::LiveEditMode(const char* OutputFilePath)
                 } while (true);
 
                 draw(OutputFilePath);
+
+                std::cout << "\nCell (" << CellColumnInput << IntInput <<") Value Set\n";
                 break;
 
             case 2: // Modify Cell Size
@@ -432,13 +434,24 @@ void Spreadsheet::LiveEditMode(const char* OutputFilePath)
                 getInput(IntInput,"Enter Cell Size : ");
                 CellSize = IntInput;
                 draw(OutputFilePath);
+
+                std::cout << "\nCell Size Set\n"; 
                 break;
 
             case 3: // Save 
 
-                getInput(StringInput,"Enter File Path : ");
-                SheetData->dump(StringInput.c_str());
+                if (SaveFilePath == nullptr)
+                {
+                    getInput(StringInput,"Enter File Path : ");
+                    SheetData->dump(StringInput.c_str());
+                }
+                else{SheetData->dump(SaveFilePath);}
+                
+                std::cout << "\nSave Succesful\n";
                 break;
+
+            // case 4: // Redraw 
+            //     break;
 
             default:return;  
         }

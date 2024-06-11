@@ -25,12 +25,9 @@ class Spreadsheet
     void setCellSize(int Size);
     int getCellSize();
 
-    // Output to terminal
     void draw(); 
-    // Output to file
     void draw(const char* OutputFilePath); 
 
-    // Edit the spreadsheet via terminal commands and view your edits on runtime in a file
-    void LiveEditMode(const char* OutputFilePath);
+    void LiveEditMode(const char* OutputFilePath,const char* SaveFilePath = nullptr);
 };
 #endif

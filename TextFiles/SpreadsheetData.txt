@@ -1,6 +1,6 @@
 -1>
 	?A? !HELLO!
-    ?B? !WORLD!
+	?B? !WORLD!
 <-
 
 -10>
