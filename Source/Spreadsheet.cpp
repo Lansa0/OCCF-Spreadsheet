@@ -195,6 +195,7 @@ static void getInput(std::string& Input,const char* Message)
         if (getline(std::cin,input))
         {
             Input = input;
+            std::cin.ignore(INT_MAX,'\n');
             return;
         }
         else
@@ -385,7 +386,8 @@ void Spreadsheet::LiveEditMode(const char* OutputFilePath,const char* SaveFilePa
         << "\n0. Quit"
         << "\n1. Modify cell"
         << "\n2. Modify cell size"
-        << "\n3. Save data to file\n";
+        << "\n3. Save data to file"
+        << "\n4. Redraw spreadsheet\n";
         getInput(IntInput,"Intput : ");  
 
         switch (IntInput)
@@ -449,9 +451,6 @@ void Spreadsheet::LiveEditMode(const char* OutputFilePath,const char* SaveFilePa
                 
                 std::cout << "\nSave Succesful\n";
                 break;
-
-            // case 4: // Redraw 
-            //     break;
 
             default:return;  
         }
