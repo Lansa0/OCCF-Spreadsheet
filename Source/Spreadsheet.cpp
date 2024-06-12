@@ -386,8 +386,7 @@ void Spreadsheet::LiveEditMode(const char* OutputFilePath,const char* SaveFilePa
         << "\n0. Quit"
         << "\n1. Modify cell"
         << "\n2. Modify cell size"
-        << "\n3. Save data to file"
-        << "\n4. Redraw spreadsheet\n";
+        << "\n3. Save data to file\n";
         getInput(IntInput,"Intput : ");  
 
         switch (IntInput)
