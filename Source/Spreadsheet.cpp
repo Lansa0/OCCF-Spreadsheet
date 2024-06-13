@@ -195,7 +195,6 @@ static void getInput(std::string& Input,const char* Message)
         if (getline(std::cin,input))
         {
             Input = input;
-            std::cin.ignore(INT_MAX,'\n');
             return;
         }
         else
