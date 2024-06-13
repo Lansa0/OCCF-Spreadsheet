@@ -1,7 +1,6 @@
 # OCCF-Spreadsheet
 
 ## Documentation
-
 ```cpp
 Constructor s(OCCF& OCCF)
 ```
@@ -39,3 +38,16 @@ Terminal input based real-time editing of the spreadsheet data
 - `const char*` OutputFilePath : The file path to where the spreadsheet will draw onto.
 - `const char*` SaveFilePath : The file path where changes to the spreadsheet will save itself to.
   - Default Value "nullptr" : A prompt will ask to provide the file path in the terminal when saving.
+***
+## Naming Convention
+### Variables
+- `PascalCase` : standard variables
+
+- `UPPERCASE_AND_UNDERSCORES` : constant variables
+
+- `lowercase_and_underscores` : variables derived from function parameters
+  - Constant function parameters remain lowercase
+### Functions
+Begin with fully lowercase verb. PascalCase for trailing words.
+> [!NOTE]
+> Depending on the situation and context of the code, rules are subject to change or nullification
