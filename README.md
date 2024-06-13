@@ -46,10 +46,12 @@ Terminal input based real-time editing of the spreadsheet data
 ### Variables
 - `PascalCase` : standard variables
 
-- `UPPERCASE_AND_UNDERSCORES` : constant variables
+- `UPPERCASE_AND_UNDERSCORES` : const variables
 
 - `lowercase_and_underscores` : variables derived from function parameters
-  - Constant function parameters remain lowercase
+  - const function parameters remain lowercase
+- `_PrefixUnderscore` : variables used only once, mostly by the line directly below
+  - const rules apply
 ### Functions
 Begin with fully lowercase verb. PascalCase for trailing words.
 > [!NOTE]
