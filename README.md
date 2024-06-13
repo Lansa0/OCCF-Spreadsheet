@@ -42,7 +42,6 @@ Terminal input based real-time editing of the spreadsheet data
 - `const char*` SaveFilePath : The file path where changes to the spreadsheet will save itself to.
   - Default Value "nullptr" : A prompt will ask to provide the file path in the terminal when saving.
 ***
-***
 ## Naming Convention
 ### Variables
 - `PascalCase` : standard variables
