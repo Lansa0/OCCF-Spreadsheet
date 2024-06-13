@@ -294,8 +294,6 @@ Spreadsheet::Spreadsheet(OCCF& OCCF)
         SheetData = &OCCF;
         Rows = _Rows;
         Columns = _Columns;
-
-        std::cout << _Rows << ": HERE";
     }
     else
     {std::cerr << "\nWarning : Spreadsheet Data Failed to Verify\n";}
