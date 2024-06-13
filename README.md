@@ -17,7 +17,7 @@ Set size of each cell
 
 **Parameter:**
 - `int` InputSize : The specified size of all cells represented in space characters.
-  - Range : [1-50]
+  - Range : [1-100]
 ***
 ```cpp
 void draw()
