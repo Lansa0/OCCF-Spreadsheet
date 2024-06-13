@@ -50,7 +50,7 @@ Terminal input based real-time editing of the spreadsheet data
 
 - `lowercase_and_underscores` : variables derived from function parameters
   - const function parameters remain lowercase
-- `_PrefixUnderscore` : variables used only once, mostly by the line directly below
+- `_PrefixUnderscore` : variables used only once, mostly by the line 1-3 lines below
   - const rules apply
 ### Functions
 Begin with fully lowercase verb. PascalCase for trailing words.
