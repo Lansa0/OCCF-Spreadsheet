@@ -11,7 +11,6 @@ public:
     VerifyError(const std::string _);
     const char* what() const noexcept override;
 };
-
 class Spreadsheet
 {
 private:

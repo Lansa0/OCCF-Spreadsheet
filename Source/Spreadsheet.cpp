@@ -313,10 +313,10 @@ void Spreadsheet::setCellSize(int input_size)
         input_size = 1;
         std::cerr << "\nWarning : Cannot set Cell Size to 0 or lower\n";
     }
-    else if (input_size > 50)
+    else if (input_size > 100)
     {
-        input_size = 50;
-        std::cerr << "\nWarning : Cannot set Cell Size above 50\n";
+        input_size = 100;
+        std::cerr << "\nWarning : Cannot set Cell Size above 100\n";
     }
     CellSize = input_size;
 }
@@ -354,7 +354,7 @@ void Spreadsheet::draw(const char* output_file_path)
     if (!OutputFile.is_open())
     {
         std::cerr << "File failed to open";
-        throw;
+        throw std::runtime_error("Failed to open file: " + std::string(output_file_path));
     }
 
     OutputFile << OutterBorder;
@@ -367,6 +367,7 @@ void Spreadsheet::draw(const char* output_file_path)
     OutputFile << OutterBorder;
     OutputFile.close();
 }
+// void Spreadsheet::draw(const std::ofstream output_file)
 
 void Spreadsheet::LiveEditMode(const char* output_file_path,const char* save_file_path)
 {
@@ -398,7 +399,7 @@ void Spreadsheet::LiveEditMode(const char* output_file_path,const char* save_fil
                         Rows = (IntInput > Rows) ? IntInput : Rows;
                         break;
                     }
-                    std::cout << "Row (" << IntInput << ") is out of range [1-999]\n";
+                    std::cout << "\nRow (" << IntInput << ") is out of range [1-999]\n";
                 } while (true);
 
                 do
@@ -412,14 +413,14 @@ void Spreadsheet::LiveEditMode(const char* output_file_path,const char* save_fil
                         Columns = (COLUMN_INDEX+1 > Columns) ? COLUMN_INDEX+1 : Columns;
                         break;
                     }
-                    std::cout << "Column (" << CellColumnInput << ") does not exist\n";
+                    std::cout << "\nColumn (" << CellColumnInput << ") does not exist\n";
                 } while (true);
                 
                 do
                 {
                     getInput(StringInput,"Enter Value : ");
                     if (parseValue(StringInput,*SheetData,int(IntInput),CellColumnInput)){break;}
-                    std::cout << "Failed to parse\n";
+                    std::cout << "\nFailed to parse\n";
                 } while (true);
 
                 draw(output_file_path);
@@ -429,11 +430,15 @@ void Spreadsheet::LiveEditMode(const char* output_file_path,const char* save_fil
 
             case 2: // Modify Cell Size
 
-                getInput(IntInput,"Enter Cell Size : ");
+                do
+                {
+                    getInput(IntInput,"Enter Cell Size : ");
+                    if (IntInput <= 0 || IntInput > 100){std::cout << "\nCell Size (" << IntInput << ") is out of range [1-100]\n";}
+                    else{break;}
+                } while (true);
+
                 CellSize = IntInput;
                 draw(output_file_path);
-
-                std::cout << "\nCell Size Set\n"; 
                 break;
 
             case 3: // Save 
