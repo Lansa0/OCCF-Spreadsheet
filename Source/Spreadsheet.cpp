@@ -102,10 +102,10 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
                 unsigned int ColumnValueIndex = 0;
                 const std::string COLUMN_VALUE = *Column.second;
                 const unsigned int COLUMN_VALUE_LENGTH = COLUMN_VALUE.length();
-                const unsigned int RELATIVE_CENTER = (COLUMN_VALUE_LENGTH < cell_size) ? CENTER - (COLUMN_VALUE_LENGTH/2) : 0;
+                const unsigned int _RELATIVE_CENTER = (COLUMN_VALUE_LENGTH < cell_size) ? CENTER - (COLUMN_VALUE_LENGTH/2) : 0;
                 for (int i = 0; i < cell_size; i++)
                 {
-                    if ((i >= RELATIVE_CENTER) && (ColumnValueIndex < COLUMN_VALUE_LENGTH))
+                    if ((i >= _RELATIVE_CENTER) && (ColumnValueIndex < COLUMN_VALUE_LENGTH))
                     {
                         RowString += COLUMN_VALUE[ColumnValueIndex];
                         ColumnValueIndex++;
@@ -118,8 +118,8 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
             }
             if (ColumnCount < total_columns)
             {
-                const unsigned int DIFFERENCE = total_columns - ColumnCount;
-                for (int _ = 0; _ < DIFFERENCE; _++)
+                const unsigned int _DIFFERENCE = total_columns - ColumnCount;
+                for (int _ = 0; _ < _DIFFERENCE; _++)
                 {
                     for (int  _ = 0; _ < cell_size; _++){RowString += ' ';}
                     RowString += '|';
@@ -241,8 +241,8 @@ static bool parseValue(std::string value,OCCF& data,const int row,const char col
             {return false;}
             else if (IsBool) 
             {
-                const std::string CHECK = (SearchBool) ? "true" : "false";
-                const bool CHECK_STATUS = CHECK[BoolIndex] == c;
+                const std::string _CHECK = (SearchBool) ? "true" : "false";
+                const bool CHECK_STATUS = _CHECK[BoolIndex] == c;
                 const bool END_OF_LINE = (VALUE_LENGTH == CharNumber);
 
                 if ((CHECK_STATUS && !END_OF_LINE) || (END_OF_LINE && c == 'e') ){BoolIndex++;}
