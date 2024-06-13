@@ -70,8 +70,8 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
     }
     row_list[0] = TopRow;
 
-    const unsigned int ROW_VECTOR_SIZE = row_list.size();
-    for (int RowIndex = 1; RowIndex < ROW_VECTOR_SIZE; RowIndex++)
+    const unsigned int _ROW_VECTOR_SIZE = row_list.size();
+    for (int RowIndex = 1; RowIndex < _ROW_VECTOR_SIZE; RowIndex++)
     {
         std::string RowString = "\n|";
  
@@ -85,8 +85,8 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
             int ColumnCount = 0;
             for (const auto& Column : sheet_data[RowIndex])
             {
-                const char COLUMN_LETTER = Column.first[0];
-                if (ALPHABET[ColumnCount] != COLUMN_LETTER)
+                const char _COLUMN_LETTER = Column.first[0];
+                if (ALPHABET[ColumnCount] != _COLUMN_LETTER)
                 {
                     const unsigned int EMPTY_CELLS = ALPHABET.find(Column.first[0]);
                     const unsigned int DIFFERENCE = EMPTY_CELLS - ColumnCount;
