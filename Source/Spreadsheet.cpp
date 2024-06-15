@@ -160,7 +160,7 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
             // Add any missing cells at the end 
             if (ColumnCount < total_columns)
             {
-                const unsigned int _DIFFERENCE = total_columns - ColumnCount + 1;
+                const unsigned int _DIFFERENCE = total_columns - ColumnCount;
                 for (int _ = 0; _ < _DIFFERENCE; _++)
                 {
                     for (int  _ = 0; _ < cell_size; _++){RowString += ' ';}
