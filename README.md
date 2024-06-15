@@ -6,40 +6,68 @@ Constructor s(OCCF& OCCF)
 ```
 ***
 ```cpp
-int getCellSize()
+bool isVerified()
 ```
-Retuns size of each cell represented in number of spaces
+returns verified status
 ***
 ```cpp
-void setCellSize(int IntputSize)
+int getRows()
 ```
-Set size of each cell
+returns number of rows
+***
+```cpp
+int getColumns()
+```
+returns number of columns
+***
+```cpp
+int getCells()
+```
+returns number of cells
+***
+```cpp
+int getCellSize()
+```
+returns size of each cell represented in number of spaces
+***
+```cpp
+void setCellSize(int input_size)
+```
+set size of every cell
 
 **Parameter:**
 - `int` InputSize : The specified size of all cells represented in space characters.
-  - Range : [1-100]
+  - Range : [2-100]
 ***
 ```cpp
 void draw()
 ```
-Output spreadsheet to the terminal
+output spreadsheet to the terminal
 ***
 ```cpp
-void draw(const char* OutputFilePath)
+void draw(std::ofstream& output_file)
 ```
-Output spreadsheet to given file
+output spreadsheet to given file
 
 **Parameter:**
-- `const char*` OutputFilePath : The file path to where the spreadsheet will draw onto.
+- `std::ofstream&` output_file : The file where the spreadsheet will draw onto
 ***
 ```cpp
-void LiveEditMode(const char* OutputFilePath,const char* SaveFilePath)
+void draw(const char* output_file_path)
 ```
-Terminal input based real-time editing of the spreadsheet data
+output spreadsheet to given file using file's path
+
+**Parameter:**
+- `const char*` output_file_path : The file path to where the spreadsheet will draw onto.
+***
+```cpp
+void LiveEditMode(const char* output_file_path,const char* save_file_path)
+```
+terminal input based real-time editing of the spreadsheet data
 
 **Parameters:**
-- `const char*` OutputFilePath : The file path to where the spreadsheet will draw onto.
-- `const char*` SaveFilePath : The file path where changes to the spreadsheet will save itself to.
+- `const char*` output_file_path : The file path to where the spreadsheet will draw onto.
+- `const char*` save_file_path : The file path where changes to the spreadsheet will save itself to.
   - Default Value "nullptr" : A prompt will ask to provide the file path in the terminal when saving.
 ***
 ## Naming Convention
