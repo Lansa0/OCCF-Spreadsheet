@@ -3,8 +3,6 @@
 // Static Helpers
 static bool verifyOCCF(OCCF& data,unsigned int& rows,unsigned int& columns)
 {
-    const std::string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
     unsigned int HighestRowNumber = 0,HighestColumnNumber = 0;
     for (const auto& RowData : data)
     {
@@ -24,9 +22,25 @@ static bool verifyOCCF(OCCF& data,unsigned int& rows,unsigned int& columns)
         unsigned int ColumnCount = 0;
         for (const auto& ColumnData : *RowData.second)
         {
-            if (!std::isalpha(ColumnData.first[0]) && ColumnData.first.length() == 1){return false;}
+            const size_t COLUMN_NAME_LENGTH = ColumnData.first.length();
 
-            ColumnCount = ALPHABET.find(ColumnData.first[0]) + 1;
+            if (COLUMN_NAME_LENGTH == 1)
+            {
+                if (!std::isalpha(ColumnData.first[0]) || !std::isupper(ColumnData.first[0])){return false;}
+                ColumnCount = ColumnData.first[0] - ('A' - 1);
+            }
+            else if (COLUMN_NAME_LENGTH == 2)
+            {
+                if (
+                    !(std::isalpha(ColumnData.first[0]) && std::isupper(ColumnData.first[0]))||
+                    !(std::isalpha(ColumnData.first[1]) && std::isupper(ColumnData.first[1]))
+                   ){return false;}
+
+                const int _FIRST_LETTER = ColumnData.first[0] - ('A' - 1);
+                const int _SECOND_LETTER = ColumnData.first[1] - ('A' - 1);
+                ColumnCount = 26 + (_FIRST_LETTER * _SECOND_LETTER);
+            }
+            else if (COLUMN_NAME_LENGTH >= 3){return false;}
             HighestColumnNumber = (ColumnCount > HighestColumnNumber) ? ColumnCount : HighestColumnNumber;
         }
     }
@@ -55,7 +69,6 @@ static void createBorders(const int cell_size,const int columns,std::string& out
 static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,const int cell_size,const int total_columns)
 {
     const unsigned int CENTER = (cell_size)/2;
-    const std::string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     // Top Row 
     std::string TopRow = "\n|///|";
@@ -63,8 +76,17 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
     {
         for (int i2 = 0; i2 < cell_size; i2++)
         {
-            if (i2 == CENTER){TopRow += ALPHABET[i1];}
-            else{TopRow += ' ';}
+            if(i1 < 26)
+            {
+                if (i2 == CENTER){TopRow += 'A' + i1;}
+                else{TopRow += ' ';}
+            }
+            else
+            {
+                if (i2 == CENTER-1){TopRow += 'A' + (i1/26) - 1;}
+                else if (i2 == CENTER){TopRow += 'A' + (i1%26);}
+                else{TopRow += ' ';}
+            }
         }
         TopRow += '|';
     }
@@ -74,31 +96,34 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
     for (int RowIndex = 1; RowIndex < _ROW_VECTOR_SIZE; RowIndex++)
     {
         std::string RowString = "\n|";
- 
+        std::map<int,std::string> CellMap;
+
         // Hard coding was easier
         if (RowIndex <= 9){RowString += " " + std::to_string(RowIndex) + " |";}
         else if (RowIndex <= 99 ){RowString += std::to_string(RowIndex) + " |";}
         else {RowString += std::to_string(RowIndex) + "|";}
 
-        if (sheet_data.find(std::to_string(RowIndex)) != sheet_data.end()) // Row Does Exist
+        // Check if Row Exist
+        if (sheet_data.find(std::to_string(RowIndex)) != sheet_data.end()) 
         {
-            int ColumnCount = 0;
             for (const auto& Column : sheet_data[RowIndex])
             {
-                const char _COLUMN_LETTER = Column.first[0];
-                if (ALPHABET[ColumnCount] != _COLUMN_LETTER)
-                {
-                    const unsigned int EMPTY_CELLS = ALPHABET.find(Column.first[0]);
-                    const unsigned int DIFFERENCE = EMPTY_CELLS - ColumnCount;
+                const std::string COLUMN_NAME = Column.first;
 
-                    for (int _ = 0; _ < DIFFERENCE; _++)
-                    {
-                        ColumnCount++;
-                        for (int _ = 0; _ < cell_size; _++){RowString += ' ';}
-                        RowString += '|';
-                    }
+                unsigned int CellNumber;
+                std::string CellString;
+
+                // Get Cell Number for Map Key
+                if (COLUMN_NAME.size() == 1)
+                {CellNumber = COLUMN_NAME[0] - ('A'-1);}
+                else
+                {
+                    const int _FIRST_LETTER = COLUMN_NAME[0] - ('A'-1);
+                    const int _SECOND_LETTER = COLUMN_NAME[1] - ('A'-1);
+                    CellNumber = (_FIRST_LETTER * _SECOND_LETTER) + 26;
                 }
 
+                // Get Cell String for Map Value
                 unsigned int ColumnValueIndex = 0;
                 const std::string COLUMN_VALUE = *Column.second;
                 const unsigned int COLUMN_VALUE_LENGTH = COLUMN_VALUE.length();
@@ -107,18 +132,35 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
                 {
                     if ((i >= _RELATIVE_CENTER) && (ColumnValueIndex < COLUMN_VALUE_LENGTH))
                     {
-                        RowString += COLUMN_VALUE[ColumnValueIndex];
+                        CellString += COLUMN_VALUE[ColumnValueIndex];
                         ColumnValueIndex++;
                     }
-                    else
-                    {RowString += ' ';}
+                    else{CellString += ' ';}             
                 }
-                RowString += '|';
-                ColumnCount++;
+                CellMap[CellNumber] = CellString + '|';
             }
+
+            // Combine Individual Cells Into One Row
+            unsigned int ColumnCount = 1;
+            for (const std::pair<int,std::string>& pair : CellMap)
+            {      
+                if (pair.first > ColumnCount)
+                {
+                    const unsigned int _DIFFERNCE = pair.first - ColumnCount;
+                    for (int _ = 0; _ < _DIFFERNCE; _++)
+                    {
+                        for (int  _ = 0; _ < cell_size; _++){RowString += ' ';}
+                        RowString += '|'; 
+                    }
+                }   
+                RowString += pair.second;
+                ColumnCount = pair.first;
+            }
+            
+            // Add any missing cells at the end 
             if (ColumnCount < total_columns)
             {
-                const unsigned int _DIFFERENCE = total_columns - ColumnCount;
+                const unsigned int _DIFFERENCE = total_columns - ColumnCount + 1;
                 for (int _ = 0; _ < _DIFFERENCE; _++)
                 {
                     for (int  _ = 0; _ < cell_size; _++){RowString += ' ';}
@@ -201,7 +243,7 @@ static void getInput(std::string& input,const char* message)
         }
     }
 }
-static bool parseValue(std::string value,OCCF& data,const int row,const char column)
+static bool parseValue(std::string value,OCCF& data,const int row,const char* column)
 {
     bool IsString=false,IsInt=false;
     bool IsBool=false,SearchBool;
@@ -299,19 +341,37 @@ Spreadsheet::Spreadsheet(OCCF& OCCF)
     {std::cerr << "\nWarning : Spreadsheet Data Failed to Verify\n";}
 }
 
+bool Spreadsheet::isVerified(){return Verified;}
+
+int Spreadsheet::getRows()
+{
+    if (!Verified){throw VerifyError("ERROR : Spreadsheet data unverified");}
+    return Rows;
+}
+int Spreadsheet::getColumns()
+{
+    if (!Verified){throw VerifyError("ERROR : Spreadsheet data unverified");}
+    return Columns;
+}
+int Spreadsheet::getCells()
+{
+    if (!Verified){throw VerifyError("ERROR : Spreadsheet data unverified");}
+    return Rows*Columns;
+}
 int Spreadsheet::getCellSize()
 {
     if (!Verified){throw VerifyError("ERROR : Spreadsheet data unverified");}
     return CellSize;
 }
+
 void Spreadsheet::setCellSize(int input_size)
 {
     if (!Verified){throw VerifyError("ERROR : Spreadsheet Data Unverified");}
 
-    if (input_size <= 0)
+    if (input_size < 2)
     {
-        input_size = 1;
-        std::cerr << "\nWarning : Cannot set Cell Size to 0 or lower\n";
+        input_size = 2;
+        std::cerr << "\nWarning : Cannot set Cell Size below 2\n";
     }
     else if (input_size > 100)
     {
@@ -340,6 +400,26 @@ void Spreadsheet::draw()
     }
     std::cout << OutterBorder;
 }
+void Spreadsheet::draw(std::ofstream& output_file)
+{
+    if (!Verified){throw VerifyError("ERROR : Spreadsheet data unverified");}
+
+    std::string OutterBorder,InnerBorder;
+    std::vector<std::string> CellRows(Rows+1);
+
+    createBorders(CellSize,Columns,OutterBorder,InnerBorder);
+    createCellRows(*SheetData,CellRows,CellSize,Columns);
+
+    output_file << OutterBorder;
+    const unsigned int RowSize = CellRows.size();
+    for (int i = 0; i < RowSize; i++)
+    {
+        output_file << CellRows[i];
+        if (i < (RowSize - 1)){output_file << InnerBorder;}
+    }
+    output_file << OutterBorder;
+    output_file.close();
+}
 void Spreadsheet::draw(const char* output_file_path)
 {
     if (!Verified){throw VerifyError("ERROR : Spreadsheet data unverified");}
@@ -367,7 +447,6 @@ void Spreadsheet::draw(const char* output_file_path)
     OutputFile << OutterBorder;
     OutputFile.close();
 }
-// void Spreadsheet::draw(const std::ofstream output_file)
 
 void Spreadsheet::LiveEditMode(const char* output_file_path,const char* save_file_path)
 {
@@ -377,7 +456,7 @@ void Spreadsheet::LiveEditMode(const char* output_file_path,const char* save_fil
     while (true)
     {
         int IntInput;
-        char CellColumnInput;
+        const char* CellColumnInput;
         std::string StringInput;
 
         std::cout 
@@ -391,7 +470,7 @@ void Spreadsheet::LiveEditMode(const char* output_file_path,const char* save_fil
         {
             case 1: // Modify Cell
 
-                do
+                do // Row
                 {
                     getInput(IntInput,"Enter Row : ");
                     if (IntInput > 0 && IntInput < 1000)
@@ -402,30 +481,47 @@ void Spreadsheet::LiveEditMode(const char* output_file_path,const char* save_fil
                     std::cout << "\nRow (" << IntInput << ") is out of range [1-999]\n";
                 } while (true);
 
-                do
+                do // Column
                 {
-                    getInput(CellColumnInput,"Enter Column : ");
-                    const std::string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                    
-                    const size_t COLUMN_INDEX = ALPHABET.find(CellColumnInput);
-                    if (COLUMN_INDEX != std::string::npos)
+                    getInput(StringInput,"Enter Column : ");
+                    const size_t STRING_INPUT_LENGTH = StringInput.length();
+                    if (STRING_INPUT_LENGTH == 1)
                     {
-                        Columns = (COLUMN_INDEX+1 > Columns) ? COLUMN_INDEX+1 : Columns;
-                        break;
+                        if (std::isalpha(StringInput[0]) && std::isupper(StringInput[0]))
+                        {
+                            const int COLUMN_NUMBER = StringInput[0] - ('A'-1);
+                            Columns = (COLUMN_NUMBER > Columns) ? COLUMN_NUMBER : Columns;
+                            break;
+                        }
+                    }   
+                    else if (STRING_INPUT_LENGTH == 2)
+                    {
+                        const char FIRST_CHARACTER = StringInput[0];
+                        const char SECOND_CHARACTER = StringInput[1];
+                        if (
+                            std::isalpha(FIRST_CHARACTER) && std::isupper(FIRST_CHARACTER) &&
+                            std::isalpha(SECOND_CHARACTER) && std::isupper(SECOND_CHARACTER)
+                           )
+                        {
+                            const int COLUMN_NUMBER = 26 + ((FIRST_CHARACTER - ('A'-1))*(SECOND_CHARACTER - ('A'-1)));
+                            Columns = (COLUMN_NUMBER > Columns) ? COLUMN_NUMBER : Columns;
+                            break;
+                        }
                     }
-                    std::cout << "\nColumn (" << CellColumnInput << ") does not exist\n";
+                    std::cout << "\nColumn (" << StringInput << ") does not exist\n";
                 } while (true);
-                
-                do
+                CellColumnInput = std::string(StringInput).c_str();
+
+                do // Value
                 {
                     getInput(StringInput,"Enter Value : ");
-                    if (parseValue(StringInput,*SheetData,int(IntInput),CellColumnInput)){break;}
+                    if (parseValue(StringInput,*SheetData,IntInput,CellColumnInput)){break;}
                     std::cout << "\nFailed to parse\n";
                 } while (true);
 
                 draw(output_file_path);
+                std::cout << "\nCell (" << CellColumnInput << IntInput << ") Value Set\n";
 
-                std::cout << "\nCell (" << CellColumnInput << IntInput <<") Value Set\n";
                 break;
 
             case 2: // Modify Cell Size
@@ -433,12 +529,13 @@ void Spreadsheet::LiveEditMode(const char* output_file_path,const char* save_fil
                 do
                 {
                     getInput(IntInput,"Enter Cell Size : ");
-                    if (IntInput <= 0 || IntInput > 100){std::cout << "\nCell Size (" << IntInput << ") is out of range [1-100]\n";}
+                    if (IntInput < 2 || IntInput > 100){std::cout << "\nCell Size (" << IntInput << ") is out of range [2-100]\n";}
                     else{break;}
                 } while (true);
 
                 CellSize = IntInput;
                 draw(output_file_path);
+                std::cout << "\nCell Size (" << IntInput << ") Set\n";
                 break;
 
             case 3: // Save 
