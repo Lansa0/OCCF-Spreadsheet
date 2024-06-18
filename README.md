@@ -1,5 +1,9 @@
 # OCCF-Spreadsheet
+## Code Status
+**Major Bug ⚠️**
 
+Columns further than (Z) may not function properly
+***
 ## Documentation
 ```cpp
 Constructor s(OCCF& OCCF)
