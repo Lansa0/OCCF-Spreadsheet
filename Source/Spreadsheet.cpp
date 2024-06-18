@@ -141,13 +141,15 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
             }
 
             // Combine Individual Cells Into One Row
-            unsigned int ColumnCount = 1;
+            unsigned int ColumnCount = 0;
             for (const std::pair<int,std::string>& pair : CellMap)
             {      
-                if (pair.first > ColumnCount)
+                if (pair.first > (ColumnCount + 1))
                 {
                     const unsigned int _DIFFERNCE = pair.first - ColumnCount;
-                    for (int _ = 0; _ < _DIFFERNCE; _++)
+                    std::cout << pair.first << " : " << *(&ColumnCount) << " : " << _DIFFERNCE << '\n';
+
+                    for (int _ = 1; _ < _DIFFERNCE; _++)
                     {
                         for (int  _ = 0; _ < cell_size; _++){RowString += ' ';}
                         RowString += '|'; 
