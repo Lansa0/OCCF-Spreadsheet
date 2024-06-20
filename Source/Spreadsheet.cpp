@@ -147,8 +147,6 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
                 if (pair.first > (ColumnCount + 1))
                 {
                     const unsigned int _DIFFERNCE = pair.first - ColumnCount;
-                    std::cout << pair.first << " : " << *(&ColumnCount) << " : " << _DIFFERNCE << '\n';
-
                     for (int _ = 1; _ < _DIFFERNCE; _++)
                     {
                         for (int  _ = 0; _ < cell_size; _++){RowString += ' ';}
