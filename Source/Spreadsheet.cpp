@@ -363,7 +363,7 @@ int Spreadsheet::getCellSize()
     if (!Verified){throw VerifyError("ERROR : Spreadsheet data unverified");}
     return CellSize;
 }
-
+// Range [2-100]
 void Spreadsheet::setCellSize(int input_size)
 {
     if (!Verified){throw VerifyError("ERROR : Spreadsheet Data Unverified");}
