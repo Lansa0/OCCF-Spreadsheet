@@ -1,8 +1,8 @@
 # OCCF-Spreadsheet
 ## Code Status
-**Major Bug ⚠️**
+**Functional ✅**
 
-Columns further than (Z) may not function properly
+No current bugs found
 ***
 ## Documentation
 ```cpp
