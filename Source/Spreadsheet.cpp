@@ -38,7 +38,7 @@ static bool verifyOCCF(OCCF& data,unsigned int& rows,unsigned int& columns)
 
                 const int _FIRST_LETTER = ColumnData.first[0] - ('A' - 1);
                 const int _SECOND_LETTER = ColumnData.first[1] - ('A' - 1);
-                ColumnCount = 26 + (_FIRST_LETTER * _SECOND_LETTER);
+                ColumnCount = (26 *_FIRST_LETTER) + _SECOND_LETTER;
             }
             else if (COLUMN_NAME_LENGTH >= 3){return false;}
             HighestColumnNumber = (ColumnCount > HighestColumnNumber) ? ColumnCount : HighestColumnNumber;
@@ -120,7 +120,7 @@ static void createCellRows(OCCF& sheet_data,std::vector<std::string>& row_list,c
                 {
                     const int _FIRST_LETTER = COLUMN_NAME[0] - ('A'-1);
                     const int _SECOND_LETTER = COLUMN_NAME[1] - ('A'-1);
-                    CellNumber = (_FIRST_LETTER * _SECOND_LETTER) + 26;
+                    CellNumber = (26 * _FIRST_LETTER) + _SECOND_LETTER;
                 }
 
                 // Get Cell String for Map Value
