@@ -5,6 +5,8 @@
 No current bugs found
 
 Currently done working on it
+
+OCCF code sucks though
 ***
 ## Documentation
 ```cpp
